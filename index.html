@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tmux: The Comprehensive Guide, Cheat Sheet & Oh My Tmux Setup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    code, pre, kbd {
+      font-family: 'Fira Code', monospace;
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #38bdf8;
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 0.375rem;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+    }
+
+    .table-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background-color: #334155;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+  <main class="max-w-4xl mx-auto space-y-12">
+
+    <!-- Header Section -->
+    <header class="border-b border-slate-800 pb-8">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Reference Guide</span>
+        <span class="text-slate-500 text-xs">written by Christian</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">tmux: Comprehensive Guide &amp; Cheat Sheet</h1>
+      <p class="mt-3 text-slate-400 text-base leading-relaxed">
+        Installation, core architecture, day-to-day command cheatsheets, custom configurations, and full <strong class="text-slate-200">Oh My Tmux!</strong> setup.
+      </p>
+    </header>
+
+    <!-- Section 1: Overview & Architecture -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <span class="text-emerald-400">1.</span> Overview &amp; Core Architecture
+      </h2>
+      <p class="text-slate-300 leading-relaxed">
+        <strong class="text-emerald-400 font-semibold">tmux</strong> (Terminal Multiplexer) lets you run multiple terminal sessions inside a single window, detach from them, and reattach later without interrupting background jobs or active processes—indispensable for local multitasking and remote work over SSH.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+          <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1">Server</span>
+          <p class="text-sm text-slate-400">The master background daemon managing all sessions, windows, and active terminal processes.</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+          <span class="text-xs uppercase tracking-wider text-sky-400 font-semibold block mb-1">Session</span>
+          <p class="text-sm text-slate-400">An isolated workspace containing one or more related full-screen windows.</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+          <span class="text-xs uppercase tracking-wider text-amber-400 font-semibold block mb-1">Window</span>
+          <p class="text-sm text-slate-400">Full-screen views inside a session (analogous to browser tabs).</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+          <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold block mb-1">Pane</span>
+          <p class="text-sm text-slate-400">Subdivided views within a window (horizontal or vertical terminal splits).</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/80 border-l-4 border-emerald-500 p-4 rounded-r-lg text-sm text-slate-300">
+        <strong class="text-white block mb-1">The Prefix Key Concept:</strong>
+        Almost all tmux shortcuts are triggered using a prefix key sequence. By default, this is <kbd>Ctrl + b</kbd>. Press and release <kbd>Ctrl + b</kbd>, then tap your command key (e.g., <kbd>Ctrl + b</kbd> followed by <kbd>c</kbd> to create a window).
+      </div>
+    </section>
+
+    <!-- Section 2: Standard Installation -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <span class="text-emerald-400">2.</span> Standard Installation
+      </h2>
+
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold text-slate-200">Linux</h3>
+        <pre class="bg-slate-900 border border-slate-800 rounded-lg p-4 text-xs sm:text-sm text-emerald-300 overflow-x-auto leading-relaxed"><code># Ubuntu / Debian / Linux Mint
+sudo apt update && sudo apt install -y tmux
+
+# Fedora / RHEL / CentOS
+sudo dnf install -y tmux
+# On older CentOS/RHEL systems:
+sudo yum install -y tmux
+
+# Arch Linux / Manjaro
+sudo pacman -S tmux
+
+# Alpine Linux
+apk add tmux
+
+# openSUSE
+sudo zypper install tmux</code></pre>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold text-slate-200">macOS</h3>
+        <p class="text-sm text-slate-400">Install via <a href="https://brew.sh/" target="_blank" rel="noopener noreferrer" class="text-sky-400 underline hover:text-sky-300">Homebrew</a>:</p>
+        <pre class="bg-slate-900 border border-slate-800 rounded-lg p-4 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>brew install tmux</code></pre>
+      </div>
+
+      <div class="space-y-2">
+        <h3 class="text-lg font-semibold text-slate-200">Windows</h3>
+        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+          <li><strong>Recommended:</strong> Run under <strong>WSL</strong> (Windows Subsystem for Linux) and install using the distribution's package manager (<code class="text-emerald-300">sudo apt install tmux</code>).</li>
+          <li><strong>Alternative:</strong> Install inside <strong>MSYS2</strong> or <strong>Git Bash</strong> (<code class="text-emerald-300">pacman -S tmux</code>).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 3: Cheat Sheet -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <span class="text-emerald-400">3.</span> tmux Command &amp; Shortcut Cheat Sheet
+      </h2>
+
+      <!-- CLI Commands -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-semibold text-slate-200">Session Management (CLI Commands)</h3>
+        <div class="table-container overflow-x-auto border border-slate-800 rounded-lg">
+          <table class="w-full text-left text-sm text-slate-300 border-collapse">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-xs font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Action</th>
+                <th class="py-3 px-4">Command</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950">
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Start new unnamed session</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Start session with name</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux new -s &lt;session_name&gt;</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">List running sessions</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux ls</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Attach to last active session</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux a <span class="text-slate-500">(or tmux attach)</span></td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Attach to specific session</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux a -t &lt;session_name&gt;</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Kill specific session</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux kill-session -t &lt;session_name&gt;</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Kill all sessions except current</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux kill-session -a</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4">Kill entire tmux server</td><td class="py-2.5 px-4 font-mono text-emerald-300">tmux kill-server</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Windows & Sessions Shortcuts -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-semibold text-slate-200">Sessions &amp; Windows (Prefix: <kbd>Ctrl + b</kbd>)</h3>
+        <div class="table-container overflow-x-auto border border-slate-800 rounded-lg">
+          <table class="w-full text-left text-sm text-slate-300 border-collapse">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-xs font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Shortcut</th>
+                <th class="py-3 px-4">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950">
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>d</kbd></td><td class="py-2.5 px-4"><strong>Detach</strong> from current session (keeps jobs alive)</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>s</kbd></td><td class="py-2.5 px-4">Interactive session switcher</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>$</kbd></td><td class="py-2.5 px-4">Rename current session</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>c</kbd></td><td class="py-2.5 px-4"><strong>Create</strong> new window</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>,</kbd></td><td class="py-2.5 px-4">Rename current window</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>w</kbd></td><td class="py-2.5 px-4">Interactive window/session tree list</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>n</kbd></td><td class="py-2.5 px-4">Switch to <strong>next</strong> window</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>p</kbd></td><td class="py-2.5 px-4">Switch to <strong>previous</strong> window</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>0-9</kbd></td><td class="py-2.5 px-4">Jump directly to window by numeric index</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>&amp;</kbd></td><td class="py-2.5 px-4">Close/kill current window</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Panes Shortcuts -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-semibold text-slate-200">Panes &amp; Splits (Prefix: <kbd>Ctrl + b</kbd>)</h3>
+        <div class="table-container overflow-x-auto border border-slate-800 rounded-lg">
+          <table class="w-full text-left text-sm text-slate-300 border-collapse">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-xs font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Shortcut</th>
+                <th class="py-3 px-4">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950">
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>%</kbd></td><td class="py-2.5 px-4">Split pane <strong>vertically</strong> (left / right)</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>"</kbd></td><td class="py-2.5 px-4">Split pane <strong>horizontally</strong> (top / bottom)</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>Arrow Keys</kbd></td><td class="py-2.5 px-4">Navigate focus between panes</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>o</kbd></td><td class="py-2.5 px-4">Cycle through panes</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>z</kbd></td><td class="py-2.5 px-4"><strong>Toggle zoom</strong> (maximize/restore active pane)</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>x</kbd></td><td class="py-2.5 px-4">Close active pane (prompts <code class="text-emerald-300">y/n</code>)</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>!</kbd></td><td class="py-2.5 px-4">Break active pane out into a standalone window</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>q</kbd></td><td class="py-2.5 px-4">Show pane index numbers briefly</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>{</kbd> or <kbd>}</kbd></td><td class="py-2.5 px-4">Swap active pane with previous / next pane</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>Space</kbd></td><td class="py-2.5 px-4">Cycle through preset pane layout arrangements</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Copy Mode Shortcuts -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-semibold text-slate-200">Scrolling &amp; Copy Mode</h3>
+        <div class="table-container overflow-x-auto border border-slate-800 rounded-lg">
+          <table class="w-full text-left text-sm text-slate-300 border-collapse">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-xs font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Shortcut</th>
+                <th class="py-3 px-4">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950">
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>[</kbd></td><td class="py-2.5 px-4">Enter <strong>Copy / Scrollback Mode</strong></td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>&uarr; / &darr;</kbd> or <kbd>PgUp / PgDn</kbd></td><td class="py-2.5 px-4">Scroll up / down terminal history</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Space</kbd></td><td class="py-2.5 px-4">Start text selection</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Enter</kbd></td><td class="py-2.5 px-4">Copy highlighted text and exit copy mode</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>Ctrl + b</kbd> then <kbd>]</kbd></td><td class="py-2.5 px-4">Paste buffer content</td></tr>
+              <tr class="hover:bg-slate-900/50"><td class="py-2.5 px-4"><kbd>q</kbd></td><td class="py-2.5 px-4">Exit copy mode without copying</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Manual Configuration -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <span class="text-emerald-400">4.</span> Manual Configuration (<code class="text-xl text-sky-300">~/.tmux.conf</code>)
+      </h2>
+      <p class="text-sm text-slate-300">
+        If you prefer a clean custom configuration from scratch, place these settings in <code class="text-emerald-300">~/.tmux.conf</code>:
+      </p>
+
+      <pre class="bg-slate-900 border border-slate-800 rounded-lg p-4 text-xs sm:text-sm text-slate-200 overflow-x-auto leading-relaxed"><code><span class="text-slate-500"># Enable mouse support (scrolling, clicking panes, resizing)</span>
+set -g mouse on
+
+<span class="text-slate-500"># Set default terminal mode to 256 colors</span>
+set -g default-terminal "screen-256color"
+
+<span class="text-slate-500"># Increase scrollback buffer history limit</span>
+set -g history-limit 10000
+
+<span class="text-slate-500"># Start window and pane numbering at 1 instead of 0</span>
+set -g base-index 1
+setw -g pane-base-index 1
+
+<span class="text-slate-500"># Renumber windows automatically when one is closed</span>
+set -g renumber-windows on
+
+<span class="text-slate-500"># More intuitive split shortcuts (| for vertical, - for horizontal)</span>
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+unbind '"'
+unbind %
+
+<span class="text-slate-500"># Use Vi keybindings in copy mode</span>
+setw -g mode-keys vi
+
+<span class="text-slate-500"># Quick reload of tmux config with prefix + r</span>
+bind r source-file ~/.tmux.conf \; display "Reloaded tmux config!"</code></pre>
+
+      <p class="text-xs text-slate-400">
+        Apply updates immediately inside an active session via:
+        <code class="bg-slate-900 text-emerald-300 px-2 py-1 rounded ml-1 font-mono">tmux source-file ~/.tmux.conf</code>
+      </p>
+    </section>
+
+    <!-- Section 5: Oh My Tmux! Setup -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <span class="text-emerald-400">5.</span> Oh My Tmux! Setup (<code class="text-xl text-sky-300">.tmux</code>)
+      </h2>
+      <p class="text-sm text-slate-300">
+        <strong class="text-emerald-400">Oh My Tmux!</strong> is an opinionated, ready-to-use configuration providing a styled status bar, responsive powerline indicators, dual prefix bindings (<kbd>Ctrl + a</kbd> and <kbd>Ctrl + b</kbd>), and seamless customization through an isolated local file.
+      </p>
+
+      <div class="space-y-4">
+        <h3 class="text-md font-semibold text-slate-200">Prerequisites</h3>
+        <pre class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>tmux -V
+git --version</code></pre>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-md font-semibold text-slate-200">Installation Steps</h3>
+        <ol class="space-y-4 list-decimal list-inside text-sm text-slate-300">
+          <li>
+            <span class="font-semibold text-slate-200">Back Up Any Existing Configuration:</span>
+            <pre class="mt-2 bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>[ -f ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.bak</code></pre>
+          </li>
+          <li>
+            <span class="font-semibold text-slate-200">Clone the Repository:</span>
+            <pre class="mt-2 bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>cd ~
+git clone https://github.com/gpakosz/.tmux.git</code></pre>
+          </li>
+          <li>
+            <span class="font-semibold text-slate-200">Create Symlink and Copy Local Template:</span>
+            <pre class="mt-2 bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code># Symlink master config
+ln -s -f .tmux/.tmux.conf ~/.tmux.conf
+
+# Copy the local settings template
+cp .tmux/.tmux.conf.local ~/.tmux.conf.local</code></pre>
+          </li>
+          <li>
+            <span class="font-semibold text-slate-200">Launch a Session:</span>
+            <pre class="mt-2 bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>tmux new -s main</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-md font-semibold text-slate-200">Customization &amp; Updates</h3>
+        <p class="text-sm text-slate-300">
+          Make all personal adjustments inside <code class="text-emerald-300">~/.tmux.conf.local</code> (never directly edit <code class="text-slate-400">~/.tmux.conf</code>):
+        </p>
+        <pre class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs sm:text-sm text-emerald-300 overflow-x-auto"><code>nano ~/.tmux.conf.local
+# or
+vim ~/.tmux.conf.local</code></pre>
+
+        <div class="bg-slate-900/60 p-4 border border-slate-800 rounded-lg text-sm space-y-2 text-slate-300">
+          <p><strong class="text-white">Powerline Symbols:</strong> Enable arrows if using a Powerline/Nerd Font by uncommenting <code class="text-emerald-300">tmux_conf_theme_powerline_symbols=true</code>.</p>
+          <p><strong class="text-white">Pulling Updates:</strong> Run <code class="text-emerald-300">cd ~/.tmux &amp;&amp; git pull</code>.</p>
+          <p><strong class="text-white">Reload Shortcut:</strong> Hit <kbd>Ctrl + b</kbd> then <kbd>r</kbd> (or <kbd>Ctrl + a</kbd> then <kbd>r</kbd>) to reload instantly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+      tmux Reference Guide &amp; Cheat Sheet &bull; Single-file standalone HTML document
+    </footer>
+
+  </main>
+</body>
+</html>
